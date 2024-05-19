@@ -1,7 +1,7 @@
 // src/FileUpload.js
 import React, { useState } from "react";
 
-function FileUpload({ yourGraphQLClient, GET_SIGNED_UPLOAD_URL }) {
+function FileUpload({ client, GET_SIGNED_UPLOAD_URL }) {
   const [file, setFile] = useState(null);
 
   const handleFileChange = (e) => {
@@ -21,7 +21,7 @@ function FileUpload({ yourGraphQLClient, GET_SIGNED_UPLOAD_URL }) {
 
     try {
       // Get signed URL from your GraphQL server
-      const response = await yourGraphQLClient.query({
+      const response = await client.query({
         query: GET_SIGNED_UPLOAD_URL,
         variables: { filename, filetype },
       });

@@ -17,6 +17,6 @@ const root = createRoot(container);
 root.render(
   <ApolloProvider client={client}>
     <App />
-    <FileUpload />
+    <FileUpload client={client} />
   </ApolloProvider>
 );
