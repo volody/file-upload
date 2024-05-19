@@ -6,30 +6,32 @@ const bodyParser = require("body-parser");
 const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
+require("dotenv").config();
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Define your GraphQL schema and resolvers
 const typeDefs = gql`
   type Query {
-    hello: String
     getSignedUploadURL(filename: String!, filetype: String!): String!
   }
 `;
 const resolvers = {
   Query: {
-    hello: () => "Hello world!",
     getSignedUploadURL: async (_, { filename, filetype }) => {
+      console.log(`filename: ${filename}, filetype: ${filetype}`);
+
       const s3Client = new S3Client({
-        region: "YOUR_REGION",
+        region: process.env.AWS_REGION,
         credentials: {
-          accessKeyId: "YOUR_ACCESS_KEY_ID",
-          secretAccessKey: "YOUR_SECRET_ACCESS_KEY",
+          accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
         },
       });
 
       const s3Params = {
-        Bucket: "YOUR_BUCKET_NAME",
+        Bucket: process.env.MY_BUCKET_NAME,
         Key: filename,
         ContentType: filetype,
         ACL: "public-read", // or another ACL according to your needs
