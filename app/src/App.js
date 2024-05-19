@@ -19,9 +19,10 @@ function App() {
   return (
     <div>
       <h1>{data.hello}</h1>
-      <div>
+      <header className="App-header">
+        <h1>File Upload in React</h1>
         <FileUpload />
-      </div>
+      </header>
     </div>
   );
 }

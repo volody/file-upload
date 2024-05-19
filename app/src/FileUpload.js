@@ -1,32 +1,46 @@
-// src/FileUpload.js
+// src/components/FileUpload.js
 import React, { useState } from "react";
+import { useLazyQuery, gql } from "@apollo/client";
 
-function FileUpload({ client, GET_SIGNED_UPLOAD_URL }) {
-  const [file, setFile] = useState(null);
+const GET_SIGNED_UPLOAD_URL = gql`
+  query GetSignedUploadURL($filename: String!, $filetype: String!) {
+    getSignedUploadURL(filename: $filename, filetype: $filetype)
+  }
+`;
 
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+const FileUpload = () => {
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [isFilePicked, setIsFilePicked] = useState(false);
+
+  // Use useLazyQuery to get a function that can be called to execute the query
+  const [getSignedUrl, { loading, error, data }] = useLazyQuery(
+    GET_SIGNED_UPLOAD_URL
+  );
+
+  const changeHandler = (event) => {
+    setSelectedFile(event.target.files[0]);
+    setIsFilePicked(true);
   };
 
-  const handleFileUpload = async (e) => {
+  const handleSubmission = async (e) => {
     e.preventDefault();
 
-    if (!file) {
+    if (!selectedFile) {
       console.error("No file selected.");
       return;
     }
 
-    const filename = file.name;
-    const filetype = file.type;
+    const filename = selectedFile.name;
+    const filetype = selectedFile.type;
 
     try {
-      // Get signed URL from your GraphQL server
-      const response = await client.query({
-        query: GET_SIGNED_UPLOAD_URL,
-        variables: { filename, filetype },
-      });
+      // Fetch the signed URL by calling the lazy query function
+      await getSignedUrl({ variables: { filename, filetype } });
 
-      const signedUrl = response.data.getSignedUploadURL;
+      if (loading) return <p>Loading ...</p>;
+      if (error) return `Error! ${error}`;
+
+      const signedUrl = data.getSignedUploadUrl.url;
 
       // Use the signed URL to upload the file directly to S3
       const result = await fetch(signedUrl, {
@@ -34,7 +48,7 @@ function FileUpload({ client, GET_SIGNED_UPLOAD_URL }) {
         headers: {
           "Content-Type": filetype,
         },
-        body: file,
+        body: selectedFile,
       });
 
       if (result.ok) {
@@ -49,13 +63,25 @@ function FileUpload({ client, GET_SIGNED_UPLOAD_URL }) {
 
   return (
     <div>
-      <h2>Upload File</h2>
-      <form onSubmit={handleFileUpload}>
-        <input type="file" onChange={handleFileChange} />
-        <button type="submit">Upload</button>
-      </form>
+      <input type="file" name="file" onChange={changeHandler} />
+      {isFilePicked ? (
+        <div>
+          <p>Filename: {selectedFile.name}</p>
+          <p>Filetype: {selectedFile.type}</p>
+          <p>Size in bytes: {selectedFile.size}</p>
+          <p>
+            lastModifiedDate:{" "}
+            {selectedFile.lastModifiedDate.toLocaleDateString()}
+          </p>
+        </div>
+      ) : (
+        <p>Select a file to show details</p>
+      )}
+      <div>
+        <button onClick={handleSubmission}>Submit</button>
+      </div>
     </div>
   );
-}
+};
 
 export default FileUpload;
