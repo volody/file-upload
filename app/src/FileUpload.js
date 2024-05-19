@@ -4,7 +4,9 @@ import { useLazyQuery, gql } from "@apollo/client";
 
 const GET_SIGNED_UPLOAD_URL = gql`
   query GetSignedUploadURL($filename: String!, $filetype: String!) {
-    getSignedUploadURL(filename: $filename, filetype: $filetype)
+    getSignedUploadUrl(filename: $filename, filetype: $filetype) {
+      url
+    }
   }
 `;
 

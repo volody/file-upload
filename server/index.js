@@ -15,13 +15,13 @@ const PORT = process.env.PORT || 5000;
 const typeDefs = gql`
   type Query {
     hello: String
-    getSignedUploadURL(filename: String!, filetype: String!): String!
+    getSignedUploadUrl(filename: String!, filetype: String!): String!
   }
 `;
 const resolvers = {
   Query: {
     hello: () => "Hello world!",
-    getSignedUploadURL: async (_, { filename, filetype }) => {
+    getSignedUploadUrl: async (_, { filename, filetype }) => {
       console.log(`filename: ${filename}, filetype: ${filetype}`);
 
       const s3Client = new S3Client({
@@ -45,6 +45,9 @@ const resolvers = {
         const signedUrl = await getSignedUrl(s3Client, command, {
           expiresIn: 60,
         });
+
+        console.log(`signedUrl: ${signedUrl}`);
+
         return signedUrl;
       } catch (err) {
         console.error(err);
