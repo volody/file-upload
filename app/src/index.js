@@ -3,7 +3,6 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import { ApolloProvider, InMemoryCache, ApolloClient } from "@apollo/client";
 import App from "./App";
-import FileUpload from "./FileUpload";
 
 // Create Apollo Client
 const client = new ApolloClient({
@@ -17,6 +16,5 @@ const root = createRoot(container);
 root.render(
   <ApolloProvider client={client}>
     <App />
-    <FileUpload client={client} />
   </ApolloProvider>
 );
