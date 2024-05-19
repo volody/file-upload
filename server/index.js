@@ -14,11 +14,13 @@ const PORT = process.env.PORT || 5000;
 // Define your GraphQL schema and resolvers
 const typeDefs = gql`
   type Query {
+    hello: String
     getSignedUploadURL(filename: String!, filetype: String!): String!
   }
 `;
 const resolvers = {
   Query: {
+    hello: () => "Hello world!",
     getSignedUploadURL: async (_, { filename, filetype }) => {
       console.log(`filename: ${filename}, filetype: ${filetype}`);
 

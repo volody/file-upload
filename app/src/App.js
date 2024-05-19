@@ -1,6 +1,7 @@
 // src/App.js
 
 import React from "react";
+import FileUpload from "./FileUpload";
 import { useQuery, gql } from "@apollo/client";
 
 const GET_HELLO = gql`
@@ -18,6 +19,9 @@ function App() {
   return (
     <div>
       <h1>{data.hello}</h1>
+      <div>
+        <FileUpload />
+      </div>
     </div>
   );
 }
