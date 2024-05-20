@@ -4,9 +4,7 @@ import { useLazyQuery, gql } from "@apollo/client";
 
 const GET_SIGNED_UPLOAD_URL = gql`
   query GetSignedUploadURL($filename: String!, $filetype: String!) {
-    getSignedUploadUrl(filename: $filename, filetype: $filetype) {
-      url
-    }
+    getSignedUploadUrl(filename: $filename, filetype: $filetype)
   }
 `;
 
@@ -35,32 +33,42 @@ const FileUpload = () => {
     const filename = selectedFile.name;
     const filetype = selectedFile.type;
 
-    try {
-      // Fetch the signed URL by calling the lazy query function
-      await getSignedUrl({ variables: { filename, filetype } });
+    //try {
+    // Fetch the signed URL by calling the lazy query function
+    // getSignedUrl({ variables: { filename, filetype } });
 
-      if (loading) return <p>Loading ...</p>;
-      if (error) return `Error! ${error}`;
-
-      const signedUrl = data.getSignedUploadUrl.url;
-
-      // Use the signed URL to upload the file directly to S3
-      const result = await fetch(signedUrl, {
-        method: "PUT",
-        headers: {
-          "Content-Type": filetype,
-        },
-        body: selectedFile,
-      });
-
-      if (result.ok) {
-        console.log("File uploaded successfully.");
-      } else {
-        console.error("Failed to upload file.");
+    getSignedUrl({
+      variables: {
+        filename,
+        filetype,
+      },
+    }).then((res) => {
+      const url = res.data?.getSignedUploadUrl;
+      if (url) {
+        // Use the signed URL to upload the file directly to S3
+        fetch(url, {
+          method: "PUT",
+          headers: {
+            "Content-Type": filetype,
+          },
+          body: selectedFile,
+        }).then((res) => {
+          if (res.ok) {
+            console.log("File uploaded successfully.");
+          } else {
+            console.error("Failed to upload file.");
+          }
+        });
       }
-    } catch (error) {
-      console.error("Error during file upload:", error);
-    }
+    });
+
+    //   if (loading) return <p>Loading ...</p>;
+    //   if (error) return `Error! ${error}`;
+
+    //   const signedUrl = data.getSignedUploadUrl.url;
+    // } catch (error) {
+    //   console.error("Error during file upload:", error);
+    // }
   };
 
   return (

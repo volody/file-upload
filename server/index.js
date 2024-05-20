@@ -36,14 +36,14 @@ const resolvers = {
         Bucket: process.env.MY_BUCKET_NAME,
         Key: filename,
         ContentType: filetype,
-        ACL: "public-read", // or another ACL according to your needs
       };
+      //        ACL: "public-read", // or another ACL according to your needs
 
       const command = new PutObjectCommand(s3Params);
 
       try {
         const signedUrl = await getSignedUrl(s3Client, command, {
-          expiresIn: 60,
+          expiresIn: 60 * 60,
         });
 
         console.log(`signedUrl: ${signedUrl}`);
