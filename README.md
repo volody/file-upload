@@ -1,4 +1,4 @@
-# Initialize project
+# Client-Side File Upload to S3 Bucket Using Server-Side Signed URLs with Apollo Server
 
 ## Set Up the Node.js Server
 
@@ -44,21 +44,21 @@ aws iam create-user --user-name new-user
 
 ```bash
 {
-	"Version": "2012-10-17",
-	"Statement": [
-		{
-			"Sid": "Statement1",
-			"Effect": "Allow",
-			"Action": [
-				"s3:ListBucket",
-				"s3:GetObject",
-				"s3:PutObject"
-			],
-			"Resource": [
-				"arn:aws:s3:::my-unique-bucket-name/*"
-			]
-		}
-	]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Statement1",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket",
+        "s3:GetObject",
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-unique-bucket-name/*"
+      ]
+    }
+  ]
 }
 ```
 
