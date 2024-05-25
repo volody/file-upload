@@ -1,6 +1,6 @@
-# Client-Side File Upload to S3 Bucket Using Server-Side Signed URLs with Apollo Server
+## Client-Side File Upload to S3 Bucket Using Signed URLs with Apollo Server
 
-## Set Up the Node.js Server
+### Set Up the Node.js Server
 
 Create a new directory for the server:
 
@@ -71,13 +71,7 @@ AWS_SECRET_ACCESS_KEY=new-user-secret-access-key
 AWS_REGION=my-unique-bucket-name-region
 ```
 
-Start the Node.js server:
-
-```bash
-node index.js
-```
-
-## Set Up React App
+### Set Up React App
 
 from root folder initialize react application
 
@@ -90,4 +84,22 @@ Integrate Apollo Client in React
 
 ```bash
 npm install @apollo/client graphql
+```
+
+### Run Server and App
+
+from root folder:
+
+start the Node.js server:
+
+```bash
+cd server
+node index.js
+```
+
+start the app:
+
+```bash
+cd app
+npm start
 ```
